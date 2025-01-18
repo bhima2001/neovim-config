@@ -1,4 +1,3 @@
-
 vim.g.mapleader = " "
 vim.keymap.set("n", "<leader>pv", vim.cmd.Ex)
 
@@ -12,10 +11,10 @@ vim.keymap.set("n", "n", "nzzzv")
 vim.keymap.set("n", "N", "Nzzzv")
 
 vim.keymap.set("n", "<leader>vwm", function()
-    require("vim-with-me").StartVimWithMe()
+require("vim-with-me").StartVimWithMe()
 end)
 vim.keymap.set("n", "<leader>svwm", function()
-    require("vim-with-me").StopVimWithMe()
+require("vim-with-me").StopVimWithMe()
 end)
 
 -- greatest remap ever
@@ -26,8 +25,6 @@ vim.keymap.set({"n", "v"}, "<leader>y", [["+y]])
 vim.keymap.set("n", "<leader>Y", [["+Y]])
 
 vim.keymap.set({"n", "v"}, "<leader>d", [["_d]])
-
--- This is going to get me cancelled
 vim.keymap.set("i", "<C-c>", "<Esc>")
 
 vim.keymap.set("n", "Q", "<nop>")
@@ -43,15 +40,35 @@ vim.keymap.set("n", "<leader>s", [[:%s/\<<C-r><C-w>\>/<C-r><C-w>/gI<Left><Left><
 vim.keymap.set("n", "<leader>x", "<cmd>!chmod +x %<CR>", { silent = true })
 
 vim.keymap.set(
-    "n",
-    "<leader>ee",
-    "oif err != nil {<CR>}<Esc>Oreturn err<Esc>"
+"n",
+"<leader>ee",
+"oif err != nil {<CR>}<Esc>Oreturn err<Esc>"
 )
 
 vim.keymap.set("n", "<leader>vpp", "<cmd>e ~/.dotfiles/nvim/.config/nvim/lua/theprimeagen/packer.lua<CR>");
 vim.keymap.set("n", "<leader>mr", "<cmd>CellularAutomaton make_it_rain<CR>");
 
 vim.keymap.set("n", "<leader><leader>", function()
-    vim.cmd("so")
+vim.cmd("so")
 end)
 
+-- Create an autocommand group to manage our autocommands cleanly
+local group = vim.api.nvim_create_augroup('Indendation Group', { clear = true })
+
+-- Set up an autocommand that formats the document before saving
+vim.api.nvim_create_autocmd('BufWritePre', {
+group = group,
+pattern = '*',  -- Applies to all files
+callback = function()
+-- Save the current cursor position
+local cursor_pos = vim.api.nvim_win_get_cursor(0)
+
+-- Perform the formatting
+vim.cmd('normal! gg=G')
+
+-- Restore the cursor position
+vim.api.nvim_win_set_cursor(0, cursor_pos)
+end,
+})
+
+vim.keymap.set("i", "<C-Tab>",  "<Down>")
